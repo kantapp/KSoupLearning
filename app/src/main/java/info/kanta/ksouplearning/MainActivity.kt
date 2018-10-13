@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         AndroidNetworking.initialize(this)
-        this.example3()
+        this.example4()
     }
     fun example1()
     {
@@ -53,6 +53,27 @@ class MainActivity : AppCompatActivity() {
                     override fun onResponse(response: String?) {
                         val doc=Jsoup.parse(response)
                         ToastLog.show(this@MainActivity,doc.title())
+                    }
+
+                    override fun onError(anError: ANError?) {
+                        ToastLog.show(this@MainActivity,anError!!.message)
+                    }
+
+                })
+    }
+
+    fun example4()
+    {
+        AndroidNetworking.get("http://www.jsoup.org")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(object : StringRequestListener{
+                    override fun onResponse(response: String?) {
+                        val doc=Jsoup.parse(response)
+                        val discription=doc.select("meta[name=description]").first().attr("content")
+                        val keywords=doc.select("meta[name=keywords]").first().attr("content")
+                        ToastLog.show(this@MainActivity,discription)
+                        ToastLog.show(this@MainActivity,keywords)
                     }
 
                     override fun onError(anError: ANError?) {
